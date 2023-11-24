@@ -1,6 +1,4 @@
-# -*- mode:python -*-
-
-# Copyright (c) 2017 ARM Limited
+# Copyright (c) 2023 Antmicro Ltd.
 # All rights reserved.
 #
 # The license below extends only to copyright in the software and shall
@@ -12,7 +10,7 @@
 # unmodified and in its entirety in all distributions of the software,
 # modified or unmodified, in source code or in binary form.
 #
-# Copyright (c) 2006 The Regents of The University of Michigan
+# Copyright (c) 2005-2007 The Regents of The University of Michigan
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -38,19 +36,41 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-Import('*')
+from m5.params import *
+from m5.proxy import *
 
-SimObject('Serial.py', sim_objects=['SerialDevice', 'SerialNullDevice'])
-SimObject('Terminal.py', sim_objects=['Terminal'], enums=['TerminalDump'])
-SimObject('Uart.py', sim_objects=[
-    'Uart', 'SimpleUart', 'Uart8250'])
+from m5.util.fdthelper import *
+from m5.defines import buildEnv
 
-Source('serial.cc')
-Source('simple.cc')
-Source('terminal.cc')
-Source('uart.cc')
-Source('uart8250.cc')
+from m5.SimObject import SimObject
+from m5.objects.Device import DmaDevice
+from m5.objects.Serial import SerialDevice
+from m5.objects.I2C import I2CDevice
+from m5.objects.PS2 import PS2Device
+from m5.objects.XlsPlatform import XlsPlatform
 
-DebugFlag('Terminal')
-DebugFlag('TerminalVerbose')
-DebugFlag('Uart')
+
+# class XlsBind(SimObject):
+#    type = "XlsBind"
+#    cxx_header = "dev/riscv/xls.hh"
+#    cxx_class = "gem5::XlsBind"
+#    channel = Param.String("", "XLS Channel name")
+#    offset = Param.Addr(0x0, "Offset at which the channel should be mapped")
+
+
+class XlsDev(DmaDevice):
+    type = "XlsDev"
+    cxx_header = "dev/cosim/xls.hh"
+    cxx_class = "gem5::XlsDev"
+    byte_order = Param.ByteOrder("little", "Device byte order")
+    pio_addr = Param.Addr(0x0, "Device PIO address")
+    pio_size = Param.Addr(0x4, "Size of address range")
+    xls_plugin_linux = Param.String("", "Path to xls .so plugin for Linux")
+    config = Param.String("", "Path to peripheral configuration")
+    platform = Param.XlsPlatform(
+        Parent.any, "XlsPlatform this device is part of."
+    )
+    device_id = Param.UInt32(0, "XLS Device ID")
+
+
+#    bindings = VectorParam.XlsBind([], "XLS channel mappings")

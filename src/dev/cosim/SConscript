@@ -1,6 +1,6 @@
 # -*- mode:python -*-
 
-# Copyright (c) 2006 The Regents of The University of Michigan
+# Copyright (c) 2024 Antmicro
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -28,32 +28,11 @@
 
 Import('*')
 
-SimObject('Device.py', sim_objects=[
-    'PioDevice', 'BasicPioDevice', 'DmaDevice', 'DmaVirtDevice', 'IsaFake'])
-Source('io_device.cc')
-Source('isa_fake.cc')
-Source('dma_device.cc')
-Source('dma_virt_device.cc')
+SimObject('Xls.py', sim_objects=['XlsDev'])
+SimObject('XlsDemo.py', sim_objects=['XlsDemoBase'])
 
-SimObject('IntPin.py', sim_objects=[])
-SimObject('ResetPort.py', sim_objects=[])
+DebugFlag('Xls')
+DebugFlag('XlsDev')
 
-DebugFlag('IsaFake')
-DebugFlag('DMA')
-
-SimObject('Platform.py', sim_objects=['Platform'])
-Source('platform.cc')
-SimObject('XlsPlatform.py', sim_objects=['XlsPlatform'])
-Source('xls_platform.cc')
-
-SimObject('BadDevice.py', sim_objects=['BadDevice'])
-
-Source('baddev.cc')
-Source('intel_8254_timer.cc')
-Source('mc146818.cc')
-Source('pixelpump.cc')
-
-DebugFlag('Intel8254Timer')
-DebugFlag('MC146818')
-
-GTest('reg_bank.test', 'reg_bank.test.cc')
+Source('XlsDemo.cc')
+Source('xls.cc')

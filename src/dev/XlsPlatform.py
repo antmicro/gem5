@@ -1,6 +1,4 @@
-# -*- mode:python -*-
-
-# Copyright (c) 2006 The Regents of The University of Michigan
+# Copyright (c) 2005-2007 The Regents of The University of Michigan
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -26,34 +24,14 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-Import('*')
+from m5.SimObject import SimObject
+from m5.objects.Platform import Platform
+from m5.params import *
+from m5.proxy import *
 
-SimObject('Device.py', sim_objects=[
-    'PioDevice', 'BasicPioDevice', 'DmaDevice', 'DmaVirtDevice', 'IsaFake'])
-Source('io_device.cc')
-Source('isa_fake.cc')
-Source('dma_device.cc')
-Source('dma_virt_device.cc')
 
-SimObject('IntPin.py', sim_objects=[])
-SimObject('ResetPort.py', sim_objects=[])
-
-DebugFlag('IsaFake')
-DebugFlag('DMA')
-
-SimObject('Platform.py', sim_objects=['Platform'])
-Source('platform.cc')
-SimObject('XlsPlatform.py', sim_objects=['XlsPlatform'])
-Source('xls_platform.cc')
-
-SimObject('BadDevice.py', sim_objects=['BadDevice'])
-
-Source('baddev.cc')
-Source('intel_8254_timer.cc')
-Source('mc146818.cc')
-Source('pixelpump.cc')
-
-DebugFlag('Intel8254Timer')
-DebugFlag('MC146818')
-
-GTest('reg_bank.test', 'reg_bank.test.cc')
+class XlsPlatform(Platform):
+    type = "XlsPlatform"
+    abstract = True
+    cxx_header = "dev/xls_platform.hh"
+    cxx_class = "gem5::XlsPlatform"
